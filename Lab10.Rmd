@@ -1,0 +1,17 @@
+---
+title: "NotTeamOnelab10"
+author: "David Orozco, Ethan Schacht, Anderson Mun, Arie del Valle, Ryan Tate"
+date: "March 20, 2019"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(lubridate)
+library(stringr)
+library(data.table)
+
+questions <- read.csv("Questions_trunc.csv")
+answers <- read.csv("answers_trunc.csv")
+
+```
