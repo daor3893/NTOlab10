@@ -21,7 +21,10 @@ merged2 <- merged %>%
          question_score = Score.x, answer_score = Score.y,
          question_body = Body.x, answer_body = Body.y,
          question_id = Id, question_asker_id = OwnerUserId.x, question_answerer_id = OwnerUserId.y) %>%
-  select(-CreationDate.x, -CreationDate.y, -Score.x, -Score.y, -Body.x, -Body.y, -Id, -X7.x, -X7.y, -Id.y, -OwnerUserId.x, -OwnerUserId.y, -Title)
+  select(-CreationDate.x, -CreationDate.y, -Score.x, -Score.y, -Body.x, -Body.y, -Id, -X.x, -X.y, -Id.y, -OwnerUserId.x, -OwnerUserId.y, -Title)
 
-merged3 <- merged2[c(8,9,1:2,4,6,10,3,5,7)] 
+merged3 <- merged2[c(8,9,1:2,4,6,10,3,5,7)]
+
+merged3$question_date <- ymd_hms(merged3$question_date)
+merged3$answer_date <- ymd_hms(merged3$answer_date)
 ```
