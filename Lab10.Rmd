@@ -11,7 +11,17 @@ library(lubridate)
 library(stringr)
 library(data.table)
 
-questions <- read.csv("Questions_trunc.csv")
-answers <- read.csv("answers_trunc.csv")
+Questions <- read.csv("Questions_trunc.csv")
+Answers <- read.csv("answers_trunc.csv")
 
+merged <- left_join(Questions, Answers, by = c("Id" = "ParentId"))
+
+merged2 <- merged %>%
+  mutate(question_title = Title, question_date = CreationDate.x, answer_date = CreationDate.y,
+         question_score = Score.x, answer_score = Score.y,
+         question_body = Body.x, answer_body = Body.y,
+         question_id = Id, question_asker_id = OwnerUserId.x, question_answerer_id = OwnerUserId.y) %>%
+  select(-CreationDate.x, -CreationDate.y, -Score.x, -Score.y, -Body.x, -Body.y, -Id, -X7.x, -X7.y, -Id.y, -OwnerUserId.x, -OwnerUserId.y, -Title)
+
+merged3 <- merged2[c(8,9,1:2,4,6,10,3,5,7)] 
 ```
