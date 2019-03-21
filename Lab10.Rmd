@@ -76,7 +76,13 @@ correlation2
 ****
 
 ```{r, echo=FALSE}
-
+gut <- merged3 %>% group_by(question_id) %>% mutate(ave = mean(answer_score)) %>% mutate(length = str_length(question_title)) %>% arrange(desc(ave)) 
+ 
+get <- gut[,c(1,3,11,12)]  %>% unique()  
+got <- get %>% filter(length < 5000, ave > 0, ave < 25) 
+ 
+ggplot(data = get, mapping = aes(x = length, y = ave))+ 
+  geom_point() 
 ```
 
 **** 
