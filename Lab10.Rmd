@@ -31,3 +31,43 @@ merged3 <- merged2[c(8,9,1:2,4,6,10,3,5,7)]
 merged3$question_date <- ymd_hms(merged3$question_date)
 merged3$answer_date <- ymd_hms(merged3$answer_date)
 ```
+
+**** 
+#### Arie's Section
+****
+
+```{r, echo=FALSE}
+
+```
+
+**** 
+#### David's Section
+****
+
+```{r, echo=FALSE}
+
+```
+
+**** 
+#### Ethan's Section
+****
+
+```{r, echo=FALSE}
+
+```
+
+**** 
+#### Ryan's Section
+****
+
+```{r, echo=FALSE}
+
+```
+
+**** 
+#### Anderson's Section (David pt 2)
+****
+
+```{r, echo=FALSE}
+
+```
