@@ -31,6 +31,14 @@ merged3 <- merged2[c(8,9,1:2,4,6,10,3,5,7)]
 merged3$question_date <- ymd_hms(merged3$question_date)
 merged3$answer_date <- ymd_hms(merged3$answer_date)
 ```
+****
+#### Team Section
+****
+* Question: What is the relationship between the timeliness of an answer and its score?
+
+```{r}
+
+```
 
 **** 
 #### Arie's Section
