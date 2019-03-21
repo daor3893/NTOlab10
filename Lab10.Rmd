@@ -37,6 +37,37 @@ merged3$answer_date <- ymd_hms(merged3$answer_date)
 ****
 
 ```{r, echo=FALSE}
+questionT<- merged3%>%
+  select(question_title,answer_score, question_score, question_date, answer_body)%>%
+  group_by(question_title, question_date, answer_body)%>%
+  summarise(avg_Qscore = mean(question_score), avg_Ascore = mean(answer_score))
+
+titlesPython <- questionT%>%
+  filter(str_detect(question_title, "python"))
+
+answerPython <- questionT%>%
+  filter(str_detect(answer_body, "python"))
+
+
+# compares avg question score and answer score of quesition titles that are about python
+ggplot(data = titlesPython, mapping = aes(x = avg_Qscore, y = avg_Ascore ))+
+  geom_point()+geom_smooth(method = lm)+
+  ggtitle("Question titles about python : Average question score vs. Average answer score")+
+  xlab("Average Answer Score")+
+  ylab("Average Question Score")
+
+correlation1 <-cor(titlesPython$avg_Qscore, titlesPython$avg_Ascore )
+correlation1
+
+# compares avg quesiton score and answer score of anser titles that are about python
+ggplot(data = answerPython, mapping = aes(x = avg_Qscore, y = avg_Ascore ))+
+  geom_point()+geom_smooth(method = lm)+
+  ggtitle("Answers about python: Average question score vs. Average answer score")+
+  xlab("Average Answer Score")+
+  ylab("Average Question Score")
+
+correlation2 <- cor(answerPython$avg_Qscore, answerPython$avg_Ascore)
+correlation2
 
 ```
 
