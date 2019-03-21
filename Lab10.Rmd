@@ -5,7 +5,7 @@ date: "March 20, 2019"
 output: html_document
 ---
 
-```{r}
+```{r,echo=FALSE, include=FALSE}
 library(tidyverse)
 library(lubridate)
 library(stringr)
@@ -18,7 +18,7 @@ Answers <- read.csv("answers_trunc.csv")
 merged <- inner_join(Questions, Answers, by = c("Id" = "ParentId"))
 
 ```
-```{r}
+```{r,echo=FALSE}
 merged2 <- merged %>%
   mutate(question_title = Title, question_date = CreationDate.x, answer_date = CreationDate.y,
          question_score = Score.x, answer_score = Score.y,
@@ -38,8 +38,41 @@ merged3$answer_date <- ymd_hms(merged3$answer_date)
 
 
 ```{r}
+dat <- merged3 %>% separate("question_date", into = c("date1","time1"), sep = " ") %>% separate("answer_date", into = c("date2","time2"), sep = " ") 
+dat$date1 <- 
+
+diff <- merged3 %>% mutate(diff = answer_date - question_date)
+diff <- diff %>% mutate(relative = as.duration(diff)) %>% filter(diff > 0 )
+dif <- diff %>% filter(diff < 1000)
+#dif <- diff[,c(1:5,8,9,11,12)]%>% arrange(desc(question_id))
+#loop <- unique(diff)
+
+yote <- diff %>% mutate(min = str_detect(relative, "minute"), hour = str_detect(relative, "hour"), week = str_detect(relative, "week"),days = str_detect(relative, "day"), year = str_detect(relative, "year"))
+
+m <- yote %>% filter(min == "TRUE")
+h <- yote %>% filter(hour == "TRUE")
+d <- yote %>% filter(days == "TRUE")
+w <- yote %>% filter(week == "TRUE")
+y <- yote %>% filter(year == "TRUE")
+ff <- yote %>% filter(diff <= 60)
 
 ```
+
+```{r}
+ggplot(data = ff, mapping = aes(y = answer_score,x = diff))+
+  geom_point() + ggtitle("hour")
+ggplot(data = m, mapping = aes(y = answer_score,x = diff))+
+  geom_point() + ggtitle("min")
+ggplot(data = h, mapping = aes(y = answer_score,x = diff))+
+  geom_point() + ggtitle("hour")
+ggplot(data = d, mapping = aes(y = answer_score,x = diff))+
+  geom_point() + ggtitle("day")
+ggplot(data = w, mapping = aes(y = answer_score,x = diff))+
+  geom_point() + ggtitle("week")
+ggplot(data = y, mapping = aes(y = answer_score,x = diff))+
+  geom_point() + ggtitle("year")
+```
+
 * Findings: We compared the time difference of questions and answers to the answer score. The graph shows that there was not a significant correlation between the two. Therefore, the time of post does not depend on the quality of an answer. This could be because people might go through stackoverflow and choose which question they want to answer depending on the quality, not necessarily which one was posted first. 
 
 **** 
@@ -92,7 +125,7 @@ get <- gut[,c(1,3,11,12)]  %>% unique()
 got <- get %>% filter(length < 5000, ave > 0, ave < 25) 
  
 ggplot(data = get, mapping = aes(x = length, y = ave))+ 
-  geom_point() 
+  geom_point() + ylab("Average Anwser Score ") + xlab("Character Length of Question") + ggtitle("Score Vs. Length")
 ```
 
 **** 
