@@ -52,9 +52,41 @@ merged3$answer_date <- ymd_hms(merged3$answer_date)
 #### Ethan's Section
 ****
 
+* Question: How does user question/answer politeness affect the score of their post?
+
+* Explanation: I decided to pursue this question because I'm curious as to how people behave in response to polite words or lack thereof.
+
 ```{r, echo=FALSE}
 
+polite <- merged3 %>%
+  mutate(polite_question = ifelse(str_detect(question_body, "[T|t]hank you") | str_detect(question_body, "[T|t]hanks") |
+         str_detect(question_body, "[P|p]lease") | str_detect(question_body, " [T|t]y "), "True", "False")) %>%
+  mutate(polite_answer = ifelse(str_detect(answer_body, "[T|t]hank you") | str_detect(answer_body, "[T|t]hanks") |
+         str_detect(answer_body, "[P|p]lease") | str_detect(answer_body, " [T|t]y "), "True", "False")) %>%
+  group_by(polite_answer, polite_question, question_id) %>%
+  summarise(avg_question_score = mean(question_score), avg_answer_score = mean(answer_score))
+
+polite2 <- polite %>%
+  group_by(polite_answer, polite_question) %>% #Another group_by required to deal with repeated question id's as a result of joining datasets
+  summarise(avg_question_score = mean(avg_question_score), avg_answer_score = mean(avg_answer_score), count = n()) %>%
+  unite(`polite_answer + polite_question`, polite_answer, polite_question, sep = " + ")
+
+polite3 <- polite2[c(1,3,2,4)]
+
+ggplot(data = polite3) +
+  geom_point(mapping = aes(x = `polite_answer + polite_question`, y = avg_question_score, size = count), color = "blue") +
+  geom_point(mapping = aes(x = `polite_answer + polite_question`, y = avg_answer_score, size = count), color = "green") +
+  xlab("Polite Answer + Polite Question (True or False)") +
+  ylab("Average Score") +
+  ggtitle("Stackoverflow Threads: Politeness vs. Question/Answer Score", subtitle = "Blue = Question Score; Green = Answer Score")
+
 ```
+
+* Process: I first created two new variables using ifelse(), having logical values of True or False depending upon my system's detection of common polite words.  I detected my answer bodies and question bodies for the words "please" and "thank you" and variations of these phrases to achieve this.  I then grouped by my two new variables and the question ID to get average question and answer scores for the 4 variations of "politeness."  Finally, I graphed the 4 variations of True/False against their repsective average question and answer scores, also taking their grouped counts into account using "size = count".
+
+* Findings: My hypothesis was that polite questions and answers would receive higher average scores.  I was mostly proven wrong, especially when it came to average question scores as polite questions averaged scores of approxiately 12 (between False + True and True + True) and less polite questions averaged scores above 30! (between False + False and True + False).  It is notable that we have a much higher sample size for less polite questions, but this difference is still quite significant.  There doesn't appear to be as strong of a correlation between answer politeness and answer score itself, though the strength of an answer score consistently depends on the strength of the question score on average (Ex: A polite answer plus a less polite question yielded the highest average question score, as well as the highest average answer score).  
+
+* Explanation: It might be possible that more polite questions resulted in lower average question scores on StackOverflow because these types of questions reflect lack of knowledge on the subject as well as an undesirable informal approach to the complex subject of coding.  For example, people attempting to simply convince others to hand them code rather than show interest in more constructive help may be more likely to use words such as "please" or "thank you" in their questions.  Furthermore, average answer scores could correlate with average question scores because conversations may either go in a helpful direction or unhelpful direction on both ends.  Both the questioner and answerer can also both recieve the benefits of a popular thread, and both will also receieve the consequences of an unpopular thread.
 
 **** 
 #### Ryan's Section
