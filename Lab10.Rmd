@@ -14,8 +14,11 @@ library(data.table)
 Questions <- read.csv("Questions_trunc.csv")
 Answers <- read.csv("answers_trunc.csv")
 
-merged <- left_join(Questions, Answers, by = c("Id" = "ParentId"))
+# merged <- left_join(Questions, Answers, by = c("Id" = "ParentId")) as NAs in date set
+merged <- inner_join(Questions, Answers, by = c("Id" = "ParentId"))
 
+```
+```{r}
 merged2 <- merged %>%
   mutate(question_title = Title, question_date = CreationDate.x, answer_date = CreationDate.y,
          question_score = Score.x, answer_score = Score.y,
