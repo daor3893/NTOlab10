@@ -36,9 +36,11 @@ merged3$answer_date <- ymd_hms(merged3$answer_date)
 ****
 * Question: What is the relationship between the timeliness of an answer and its score?
 
+
 ```{r}
 
 ```
+* Findings: We compared the time difference of questions and answers to the answer score. The graph shows that there was not a significant correlation between the two. Therefore, the time of post does not depend on the quality of an answer. This could be because people might go through stackoverflow and choose which question they want to answer depending on the quality, not necessarily which one was posted first. 
 
 **** 
 #### Arie's Section
