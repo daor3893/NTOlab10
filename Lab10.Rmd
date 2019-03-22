@@ -263,3 +263,11 @@ ggplot(data = merged7, mapping = aes(x = neat_count, y = ave)) +
 ```{r, echo=FALSE}
 
 ```
+
+#### Who did what?
+
+* David - Big gay
+* Arie - 
+* Anderson- 
+* Ethan- ind section and findings, merged and tidied/sorted the two datasets, findings/explanation on team section
+* Ryan-
