@@ -15,6 +15,7 @@ Questions <- read.csv("Questions_trunc.csv")
 Answers <- read.csv("answers_trunc.csv")
 
 # merged <- left_join(Questions, Answers, by = c("Id" = "ParentId")) as NAs in date set
+
 merged <- inner_join(Questions, Answers, by = c("Id" = "ParentId"))
 
 ```
@@ -37,7 +38,7 @@ merged3$answer_date <- ymd_hms(merged3$answer_date)
 * Question: What is the relationship between the timeliness of an answer and its score?
 
 
-```{r}
+```{r,echo = FALSE}
 dat <- merged3 %>% separate("question_date", into = c("date1","time1"), sep = " ") %>% separate("answer_date", into = c("date2","time2"), sep = " ") 
 dat$date1 <- 
 
@@ -47,33 +48,43 @@ dif <- diff %>% filter(diff < 1000)
 #dif <- diff[,c(1:5,8,9,11,12)]%>% arrange(desc(question_id))
 #loop <- unique(diff)
 
-yote <- diff %>% mutate(min = str_detect(relative, "minute"), hour = str_detect(relative, "hour"), week = str_detect(relative, "week"),days = str_detect(relative, "day"), year = str_detect(relative, "year"))
+yote <- diff %>% mutate(sec = str_detect(relative, "s$"),min = str_detect(relative, "minute"),hour = str_detect(relative, "hour"), week = str_detect(relative, "week"),days = str_detect(relative, "day"), year = str_detect(relative, "year")) %>% arrange(-desc(diff))
 
-m <- yote %>% filter(min == "TRUE")
-h <- yote %>% filter(hour == "TRUE")
-d <- yote %>% filter(days == "TRUE")
-w <- yote %>% filter(week == "TRUE")
-y <- yote %>% filter(year == "TRUE")
-ff <- yote %>% filter(diff <= 60)
+s <- yote[c(1:45),]
+
+mm <- yote %>% filter(min == "TRUE") %>% mutate(min = diff/60) %>% arrange(desc(diff))
+h <- yote %>% filter(hour == "TRUE")  %>% mutate(hour = diff/3600) %>% arrange(desc(diff))
+d <- yote %>% filter(days == "TRUE")  %>% mutate(day = diff/(3600*24)) %>% arrange(desc(diff))
+w <- yote %>% filter(week == "TRUE")  %>% mutate(week = diff/(3600*24*7)) %>% arrange(desc(diff))
+y <- yote %>% filter(year == "TRUE")  %>% mutate(year = diff/(3600*24*365)) %>% arrange(desc(diff))
 
 ```
 
-```{r}
-ggplot(data = ff, mapping = aes(y = answer_score,x = diff))+
-  geom_point() + ggtitle("hour")
-ggplot(data = m, mapping = aes(y = answer_score,x = diff))+
-  geom_point() + ggtitle("min")
-ggplot(data = h, mapping = aes(y = answer_score,x = diff))+
-  geom_point() + ggtitle("hour")
-ggplot(data = d, mapping = aes(y = answer_score,x = diff))+
-  geom_point() + ggtitle("day")
-ggplot(data = w, mapping = aes(y = answer_score,x = diff))+
-  geom_point() + ggtitle("week")
-ggplot(data = y, mapping = aes(y = answer_score,x = diff))+
-  geom_point() + ggtitle("year")
+```{r,echo=FALSE,warning = FALSE,message=FALSE}
+
+ggplot(data = m, mapping = aes(y = answer_score,x = min))+
+  geom_point() + ggtitle("min") + ylim(0,1000) 
+ggplot(data = d, mapping = aes(y = answer_score,x = day))+
+  geom_point() + ggtitle("day")+ ylim(0,1000) 
+
+```
+```{r,echo=FALSE,include=FALSE}
+ggplot(data = h, mapping = aes(y = answer_score,x = hour))+
+  geom_point() + ggtitle("hour") + ylim(0,1000) 
+ggplot(data = d, mapping = aes(y = answer_score,x = day))+
+  geom_point() + ggtitle("day")+ ylim(0,1000) 
+ggplot(data = w, mapping = aes(y = answer_score,x = week))+
+  geom_point() + ggtitle("week") + ylim(0,1000) 
+ggplot(data = y, mapping = aes(y = answer_score,x = year))+
+  geom_point() + ggtitle("year")+ ylim(0,110) 
+ggplot(data = s, mapping = aes(y = answer_score,x = diff))+
+  geom_point() + ggtitle("sec")
 ```
 
 * Findings: We compared the time difference of questions and answers to the answer score. The graph shows that there was not a significant correlation between the two. Therefore, the time of post does not depend on the quality of an answer. This could be because people might go through stackoverflow and choose which question they want to answer depending on the quality, not necessarily which one was posted first. 
+```{r,echo=FALSE}
+# stats try percentage of question answered within a minute, hour, day, week, year. and the amount of those
+```
 
 **** 
 #### Arie's Section
