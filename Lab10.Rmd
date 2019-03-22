@@ -414,4 +414,4 @@ ggplot(data = merged7, mapping = aes(x = neat_count, y = ave)) +
 * Arie - ind section and helped write findings for second question.
 * Anderson- 
 * Ethan- ind section and findings, merged and tidied/sorted the two datasets, findings/explanation on team section addressing first question. 
-* Ryan-
+* Ryan- indiviudal section, researched data/time information for team section
