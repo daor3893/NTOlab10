@@ -33,8 +33,9 @@ merged3$question_date <- ymd_hms(merged3$question_date)
 merged3$answer_date <- ymd_hms(merged3$answer_date)
 ```
 ****
-#### Team Section
+####Team Section
 ****
+
 * Question: What is the relationship between the timeliness of an answer and its score?
 
 
@@ -63,9 +64,15 @@ y <- yote %>% filter(year == "TRUE")  %>% mutate(year = diff/(3600*24*365)) %>% 
 ```{r,echo=FALSE,warning = FALSE,message=FALSE}
 
 ggplot(data = m, mapping = aes(y = answer_score,x = min))+
-  geom_point() + ggtitle("min") + ylim(0,1000) 
+  geom_point() + ggtitle("min") + ylim(0,1000) +
+  ggtitle("Stackoverflow Threads: Timing of Response vs Answer Score") +
+  xlab("Response Time (min)") +
+  ylab("Answer Score")
 ggplot(data = d, mapping = aes(y = answer_score,x = day))+
-  geom_point() + ggtitle("day")+ ylim(0,1000) 
+  geom_point() + ggtitle("day")+ ylim(0,1000) +
+  ggtitle("Stackoverflow Threads: Timing of Response vs Answer Score") +
+  xlab("Response Time (days)") +
+  ylab("Answer Score")
 
 ```
 ```{r,echo=FALSE,include=FALSE}
@@ -81,7 +88,8 @@ ggplot(data = s, mapping = aes(y = answer_score,x = diff))+
   geom_point() + ggtitle("sec")
 ```
 
-* Findings: We compared the time difference of questions and answers to the answer score. The graph shows that there was not a significant correlation between the two. Therefore, the time of post does not depend on the quality of an answer. This could be because people might go through stackoverflow and choose which question they want to answer depending on the quality, not necessarily which one was posted first. 
+* Findings/Explanation: We compared the time difference of questions and answers to the answer score. The graph shows that there was not a significant correlation between the two.  However, there appears to be a more slight negative correlation if we look at the time range of 0-60 minutes versus larger time ranges.  Therefore, we conclude that the timeliness of a response has little to no affect on the answer score. This could be because people might go through stackoverflow and choose which question they want to answer depending on the quality, not necessarily which one was posted first. 
+
 ```{r,echo=FALSE}
 # stats try percentage of question answered within a minute, hour, day, week, year. and the amount of those
 ```
@@ -249,7 +257,7 @@ ggplot(data = merged7, mapping = aes(x = neat_count, y = ave)) +
 * The relationship between the length of the answer body and the score for the body is slightly positive, probably due to the fact that the more an answer is explained, the more likely the answer is right and thus will be upvoted. However, it is probably not more positive because some of the best answers are realtively simply and don't need a lot of words explaining them.
 
 **** 
-#### Anderson's Section (David pt 2)
+#### Anderson's Section
 ****
 
 ```{r, echo=FALSE}
