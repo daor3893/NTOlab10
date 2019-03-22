@@ -411,7 +411,7 @@ ggplot(data = merged7, mapping = aes(x = neat_count, y = ave)) +
 #### Who did what?
 
 * David - Ind section, started GitKraken Repo, team aspect tibbles and graphs, finding/explanations for team section addressing the second question. 
-* Arie - 
+* Arie - ind section and helped write findings for second question.
 * Anderson- 
 * Ethan- ind section and findings, merged and tidied/sorted the two datasets, findings/explanation on team section addressing first question. 
 * Ryan-
