@@ -172,9 +172,62 @@ ggplot(data = polite3) +
 #### Ryan's Section
 ****
 
+##### string length of answer body vs answer score
 ```{r, echo=FALSE}
 
+
+#get average score for each string length
+boi <- merged3 %>% 
+  group_by( str_length(answer_body)) %>%
+  summarize(ave = mean(answer_score))
+
+#got rid of some outliers messing up my graph >:(
+boi1 <- boi %>%
+  filter(ave < 750, `str_length(answer_body)` < 7500 )
+
+#graph
+ggplot(data = boi1, mapping = aes(x= `str_length(answer_body)`, y= ave)) +
+  geom_point( alpha = 1/10) +
+  geom_smooth( method='lm')
+
+
 ```
+
+
+##### falsly postive word count in question body vs average score for question body   
+```{r, echo=FALSE}
+
+
+
+#make new column with count for the amount of "neat" words in each question body
+merged4 <- merged3 %>%
+  mutate(neat_count= str_count(question_body, c("neat", "neato","nice","noice")))
+
+#get average score for each neat count
+merged7 <-merged4 %>% 
+  filter(neat_count < 3) %>% #neat count of 3 only happens once so it skews data
+  group_by( neat_count) %>%
+  summarize(ave = mean(question_score))
+
+merged8 <-merged4 %>% 
+  group_by( neat_count) %>%
+  summarize(s = sum(question_score))
+
+#graph
+ggplot(data = merged7, mapping = aes(x = neat_count, y = ave)) +
+  geom_point() +
+  geom_smooth( method='lm')
+
+
+
+
+```
+
+* I created a feature called neat_count because I wanted to see the change in an questions score when they were positive, but maybe also slightly worried, which is displayed through the use of words like "neat", "neato","nice", and "noice".
+* The relationship between question score and the count of worriedly positive words is slightly negative. This could be due to the fact that people who are worried about their post and try to remain positive are seen as being less honest than if they were just worried about getting an answer. The correlation isn't very strong though, and this could most likely be due to the fact that just becase someone used the word nice, it does not necessarily imply anything, whether about positivity or the level of worriedness.
+
+* Also, I created a feature called str_length(answer_body) because I wanted to see the change in an answer's score when the answer became more extensive.
+* The relationship between the length of the answer body and the score for the body is slightly positive, probably due to the fact that the more an answer is explained, the more likely the answer is right and thus will be upvoted. However, it is probably not more positive because some of the best answers are realtively simply and don't need a lot of words explaining them.
 
 **** 
 #### Anderson's Section (David pt 2)
