@@ -36,8 +36,11 @@ merged3$answer_date <- ymd_hms(merged3$answer_date)
 ####Team Section
 ****
 
-* Question: What is the relationship between the timeliness of an answer and its score?
+Questions: 
 
+* Is there a relationship between total time elapsed since a question was posted and the score of its answer?
+* What is the relationship between the timeliness of an answer and its score? That is, does the first response to a question recieve a higher answer score than the following responses?
+  
 
 ```{r,echo = FALSE}
 dat <- merged3 %>% separate("question_date", into = c("date1","time1"), sep = " ") %>% separate("answer_date", into = c("date2","time2"), sep = " ") 
@@ -88,7 +91,9 @@ ggplot(data = s, mapping = aes(y = answer_score,x = diff))+
   geom_point() + ggtitle("sec")
 ```
 
-* Findings/Explanation: We compared the time difference of questions and answers to the answer score. The graph shows that there was not a significant correlation between the two.  However, there appears to be a more slight negative correlation if we look at the time range of 0-60 minutes versus larger time ranges.  Therefore, we conclude that the timeliness of a response has little to no affect on the answer score. This could be because people might go through stackoverflow and choose which question they want to answer depending on the quality, not necessarily which one was posted first. 
+Findings/Explanation: 
+
+* We compared the time difference of questions and answers to the answer score. The graph shows that there was not a significant correlation between the two.  However, there appears to be a more slight negative correlation if we look at the time range of 0-60 minutes versus larger time ranges.  Therefore, we conclude that the time elapsed since a question was asked has little to no affect on the answer score. This could be because people might go through stackoverflow and choose which question they want to answer depending on the quality, not necessarily which one was posted first. 
 
 ```{r,echo=FALSE}
 # stats try percentage of question answered within a minute, hour, day, week, year. and the amount of those
@@ -115,7 +120,7 @@ stats
 
 * findings here
 
-```{r,echo = FALSE}
+```{r,echo = FALSE,message=FALSE}
 # find all of the quickest response times for the same question Id and put a column with rank. 1 = fastest
 yeet <- yote %>% group_by(question_id) %>% mutate(quickest = min(diff)) %>% arrange(desc(question_id))
 
@@ -150,13 +155,44 @@ yeet5 <- anti_join(yeet4,jeepers4) %>% group_by(question_id) %>% mutate(quickest
 jeepers5 <- yeet5[,c(1,19)] %>% rename("diff" = "quickest")
 
 yaawt5 <- semi_join(yeet5,jeepers5) %>% mutate(rank = 5) %>% arrange(desc(question_id)) 
+# rank 6 filters out all ranks 5
+yeet6 <- anti_join(yeet5,jeepers5) %>% group_by(question_id) %>% mutate(quickest = min(diff)) %>% arrange(desc(question_id))
 
+jeepers6 <- yeet6[,c(1,19)] %>% rename("diff" = "quickest")
+
+yaawt6 <- semi_join(yeet6,jeepers6) %>% mutate(rank = 6) %>% arrange(desc(question_id)) 
+
+```
+
+```{r,echo=FALSE,message=FALSE}
+
+ultimate_yeet <- full_join(yaawt,yaawt2) %>% full_join(.,yaawt3)%>% full_join(.,yaawt4)%>% full_join(.,yaawt5) %>% full_join(.,yaawt6)
+```
+```{r,echo=FALSE}
+ggplot(data = ultimate_yeet, mapping = aes(x = rank))+
+  geom_density() + ggtitle("Distribution of Rank","Rank 'n' = nth responder")
+
+```
+shows the rank of a response in respect to the question being ask
+this makes sense, most questions only have one response, there are more nth responses than (n+1)th responses
+```{r,echo=FALSE,message=FALSE}
+ultimate_yeet <- ultimate_yeet %>% arrange(desc(question_id))
+
+zoinks <- yote %>% group_by(question_id) %>% mutate(highscore = max(answer_score)) %>% arrange(desc(question_id))
+
+shaggy <- zoinks[,c(1,19)] %>% rename("answer_score" = "highscore")
+
+hawye <- semi_join(zoinks,shaggy) %>% arrange(desc(question_id)) 
+#data below shows the rank for the answer with the highest answer score
+force <- semi_join(ultimate_yeet,hawye)
 ```
 
 ```{r,echo=FALSE}
-
-ultimate_yeet <- full_join(yaawt,yaawt2) %>% full_join(.,yaawt3)%>% full_join(.,yaawt4)%>% full_join(.,yaawt5)
+ force %>% group_by(rank) %>% count()
+ggplot(data = force, mapping = aes(x = rank))+
+  geom_density() + ggtitle("Rank Distribution for Highest Answer Score","Rank 'n' = nth responder")
 ```
+lines up well with the distrubion of rank graph
 
 **** 
 #### Arie's Section
