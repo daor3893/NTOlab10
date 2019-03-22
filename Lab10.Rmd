@@ -33,8 +33,9 @@ merged3$question_date <- ymd_hms(merged3$question_date)
 merged3$answer_date <- ymd_hms(merged3$answer_date)
 ```
 ****
-#### Team Section
+####Team Section
 ****
+
 * Question: What is the relationship between the timeliness of an answer and its score?
 
 
@@ -63,9 +64,15 @@ y <- yote %>% filter(year == "TRUE")  %>% mutate(year = diff/(3600*24*365)) %>% 
 ```{r,echo=FALSE,warning = FALSE,message=FALSE}
 
 ggplot(data = m, mapping = aes(y = answer_score,x = min))+
-  geom_point() + ggtitle("min") + ylim(0,1000) 
+  geom_point() + ggtitle("min") + ylim(0,1000) +
+  ggtitle("Stackoverflow Threads: Timing of Response vs Answer Score") +
+  xlab("Response Time (min)") +
+  ylab("Answer Score")
 ggplot(data = d, mapping = aes(y = answer_score,x = day))+
-  geom_point() + ggtitle("day")+ ylim(0,1000) 
+  geom_point() + ggtitle("day")+ ylim(0,1000) +
+  ggtitle("Stackoverflow Threads: Timing of Response vs Answer Score") +
+  xlab("Response Time (days)") +
+  ylab("Answer Score")
 
 ```
 ```{r,echo=FALSE,include=FALSE}
@@ -81,7 +88,8 @@ ggplot(data = s, mapping = aes(y = answer_score,x = diff))+
   geom_point() + ggtitle("sec")
 ```
 
-* Findings: We compared the time difference of questions and answers to the answer score. The graph shows that there was not a significant correlation between the two. Therefore, the time of post does not depend on the quality of an answer. This could be because people might go through stackoverflow and choose which question they want to answer depending on the quality, not necessarily which one was posted first. 
+* Findings/Explanation: We compared the time difference of questions and answers to the answer score. The graph shows that there was not a significant correlation between the two.  However, there appears to be a more slight negative correlation if we look at the time range of 0-60 minutes versus larger time ranges.  Therefore, we conclude that the timeliness of a response has little to no affect on the answer score. This could be because people might go through stackoverflow and choose which question they want to answer depending on the quality, not necessarily which one was posted first. 
+
 ```{r,echo=FALSE}
 # stats try percentage of question answered within a minute, hour, day, week, year. and the amount of those
 ss <- s %>% summarize(score = mean(answer_score))
@@ -108,6 +116,9 @@ stats
 **** 
 #### Arie's Section
 ****
+* Question: How does the average score of answers compare to the average score of questions that have to do with python?
+
+* Explanation: I wanted to see if questions and answers that specified that they were talking about python had an effect on the overall score of the question and answer.
 
 ```{r, echo=FALSE}
 questionT<- merged3%>%
@@ -143,6 +154,11 @@ correlation2 <- cor(answerPython$avg_Qscore, answerPython$avg_Ascore)
 correlation2
 
 ```
+* Process: First I created a variable that looks at specfic columns in the data. I used `select()` to focus on the columns of data that I wanted to use. I then used `group_by()` to gather all reapted question titles and answer body. After that I use `summarize()` to get the average of answer score and question score. Then I created two new variables, one that searchs for the word "python" using `str_detect()` in the question titles. The other varible also searchs for the word python in the answer bodyusing `str_detect()`. Then I made a `ggplot()` for both variables using `geom_point()` with a best line of fit, to see if there were any differences between question titles and answer body regarding the scores. To see if there was a correletion between the average score for answers and question titles I used `cor()` function.
+
+* Findings: I found that there was not much of a difference bewteen the plots. The overall count of question titles compared to answers was higher, but the graphs display a similar relationship between question score and answer score. When calculating the correlation for the graphs, they both displayed a strong positive correlation around 0.5(correlations are underneath each plot). From these graphs, it shows that there is a relation between a question score and answer score. For example, a poorly scored question relates to a low scored answer. This makes sense, because the quality of a question will determine how someone is going to respond to it.
+
+* Explanation: My guess was that answer and question scores would be higher overall becuase they were more specific. Taking everthing into account, if the answer body or question title included "python" in it didn't seem to have an and affect on the score. But I did find a relationship bewteen question and answer scores.
 
 **** 
 #### David's Section
@@ -260,9 +276,17 @@ ggplot(data = merged7, mapping = aes(x = neat_count, y = ave)) +
 * The relationship between the length of the answer body and the score for the body is slightly positive, probably due to the fact that the more an answer is explained, the more likely the answer is right and thus will be upvoted. However, it is probably not more positive because some of the best answers are realtively simply and don't need a lot of words explaining them.
 
 **** 
-#### Anderson's Section (David pt 2)
+#### Anderson's Section
 ****
 
 ```{r, echo=FALSE}
 
 ```
+
+#### Who did what?
+
+* David - Big gay
+* Arie - 
+* Anderson- 
+* Ethan- ind section and findings, merged and tidied/sorted the two datasets, findings/explanation on team section
+* Ryan-
