@@ -406,13 +406,13 @@ ggplot(data = merged7, mapping = aes(x = neat_count, y = ave)) +
 
 ```{r, echo=FALSE}
 How <- filter(merged3, str_detect(merged3$question_title, "how"))
-count(How)
+#count(How)
 What <- filter(merged3, str_detect(merged3$question_title, "what"))
-count(What)
+#count(What)
 When <- filter(merged3, str_detect(merged3$question_title, "when")) 
-count(When)
+#count(When)
 Where <- filter(merged3, str_detect(merged3$question_title, "where")) 
-count(Where)
+#count(Where)
 pf <- tribble(
   ~Questionword, ~Number_of_questions, ~Average_times_asked,
   'How', 783, 0.0244,
@@ -430,7 +430,7 @@ pf
 
 * pf represents the tribble that gives you the data on the questions asked and their results by the numbers. The data in pf is very useful when trying to find out how many questions are asking the what, when, where and how. Through this data you can see that the questions asking how are the most frequent out of the specified words with 783 questions asking how. This number may seem large but when compared to everything else that didn't include these words there's only a 2.44% chance your question will ask how.
 
-
+****
 #### Who did what?
 
 * David - Ind section, started GitKraken Repo, team aspect tibbles and graphs, finding/explanations for team section addressing the second question. 
