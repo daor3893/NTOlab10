@@ -52,7 +52,7 @@ yote <- diff %>% mutate(sec = str_detect(relative, "s$"),min = str_detect(relati
 
 s <- yote[c(1:45),]
 
-mm <- yote %>% filter(min == "TRUE") %>% mutate(min = diff/60) %>% arrange(desc(diff))
+m <- yote %>% filter(min == "TRUE") %>% mutate(min = diff/60) %>% arrange(desc(diff))
 h <- yote %>% filter(hour == "TRUE")  %>% mutate(hour = diff/3600) %>% arrange(desc(diff))
 d <- yote %>% filter(days == "TRUE")  %>% mutate(day = diff/(3600*24)) %>% arrange(desc(diff))
 w <- yote %>% filter(week == "TRUE")  %>% mutate(week = diff/(3600*24*7)) %>% arrange(desc(diff))
