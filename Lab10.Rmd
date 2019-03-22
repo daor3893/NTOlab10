@@ -52,7 +52,7 @@ yote <- diff %>% mutate(sec = str_detect(relative, "s$"),min = str_detect(relati
 
 s <- yote[c(1:45),]
 
-mm <- yote %>% filter(min == "TRUE") %>% mutate(min = diff/60) %>% arrange(desc(diff))
+m <- yote %>% filter(min == "TRUE") %>% mutate(min = diff/60) %>% arrange(desc(diff))
 h <- yote %>% filter(hour == "TRUE")  %>% mutate(hour = diff/3600) %>% arrange(desc(diff))
 d <- yote %>% filter(days == "TRUE")  %>% mutate(day = diff/(3600*24)) %>% arrange(desc(diff))
 w <- yote %>% filter(week == "TRUE")  %>% mutate(week = diff/(3600*24*7)) %>% arrange(desc(diff))
@@ -84,6 +84,25 @@ ggplot(data = s, mapping = aes(y = answer_score,x = diff))+
 * Findings: We compared the time difference of questions and answers to the answer score. The graph shows that there was not a significant correlation between the two. Therefore, the time of post does not depend on the quality of an answer. This could be because people might go through stackoverflow and choose which question they want to answer depending on the quality, not necessarily which one was posted first. 
 ```{r,echo=FALSE}
 # stats try percentage of question answered within a minute, hour, day, week, year. and the amount of those
+ss <- s %>% summarize(score = mean(answer_score))
+mm <- m %>% summarize(score = mean(answer_score))
+hh <- h %>% summarize(score = mean(answer_score))
+dd <- d %>% summarize(score = mean(answer_score))
+ww <- w %>% summarize(score = mean(answer_score))
+yy <- y %>% summarize(score = mean(answer_score))
+
+
+#sum(45,18801,9103,1511,2546,84)
+stats <- tibble(
+`Answered in...` = c("seconds","minutes","hours","days","weeks","years"),
+amount = c(45,18801,9103,1511,2546,84),
+percentage = c(45/32090,18801/32090,9103/32090,1511/32090,2546/32090,84/32090),
+average_score = c(106,17.1,8.62,10.2,11.6,50.5),
+`Score x Amount` = c(amount*average_score))
+
+stats <- stats
+stats
+
 ```
 
 **** 
