@@ -164,9 +164,9 @@ yaawt6 <- semi_join(yeet6,jeepers6) %>% mutate(rank = 6) %>% arrange(desc(questi
 
 ```
 ****
-* For these graphs and tibbles, we use a combination of `semi_join`,`full_join`, and "anti_join". First, we made a tibble that contain only the quickest answers per question Id and added a variable called rank which represents the order the answers came in. Rank 1 = first answer.
+* For these graphs and tibbles, we use a combination of `semi_join`,`full_join`, and `anti_join`. First, we made a tibble that contain only the quickest answers per question Id and added a variable called rank which represents the order the answers came in. Rank 1 = first answer.
 Then we used `semi-join` to keep all the questions in the orginial data that matched with the new tibble. This gives us a tibble with only rank 1 entries.
-We repeated this process up to rank 6 then use full_join to combine all 6 ranks into one tibble.
+We repeated this process up to rank 6 then use `full_join` to combine all 6 ranks into one tibble.
 
 ```{r,echo=FALSE,message=FALSE}
 
@@ -208,10 +208,10 @@ n2 <- force %>% group_by(rank) %>% count() %>% mutate(percent = n/10682)
 n2
 ```
 
-* The graph and tibble above shows the same trend has the Rank Distribution graph. This means that rank 1 answers tend to have the highest answer scores. Of all the top answers, 50% are rank 1. Only 27% are rank 2. This makes sense. There are many questions that only contain one rank, making Rank 1 the highest scoring by default. Also, there is a high chance that the first few question do a good job of answering the question and recieves a higher score.
+* The graph and tibble above shows the same trend has the Rank Distribution graph. This means that rank 1 answers tend to have the highest answer scores. Of all the top answers, 50% are rank 1. Only 27% are rank 2. This makes sense. There are many questions that only contain one rank, making Rank 1 the highest scoring by default. Also, there is a high chance that the first few questions do a good job of answering the question and recieves a higher score.
 
 ****
-* An overlay between the who distributions are shows below. This shows that while they follow the saem trend, the red is significatly higer for rank 1-3. This states that for rank 1-3, timeliness of answer does effect what rank recieve the highest score. 
+* An overlay between the who distributions are shown below. This shows that while they follow the same trend, the red is significatly higer for rank 1-3. This states that for rank 1-3, timeliness of answer does effect what rank recieve the highest score. 
 
 ```{r, echo=FALSE}
 
