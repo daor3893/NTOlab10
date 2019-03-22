@@ -89,6 +89,9 @@ ggplot(data = s, mapping = aes(y = answer_score,x = diff))+
 **** 
 #### Arie's Section
 ****
+* Question: How does the average score of answers compare to the average score of questions that have to do with python?
+
+* Explanation: I wanted to see if questions and answers that specified that they were talking about python had an effect on the overall score of the question and answer.
 
 ```{r, echo=FALSE}
 questionT<- merged3%>%
@@ -124,6 +127,11 @@ correlation2 <- cor(answerPython$avg_Qscore, answerPython$avg_Ascore)
 correlation2
 
 ```
+* Process: First I created a variable that looks at specfic columns in the data. I used `select()` to focus on the columns of data that I wanted to use. I then used `group_by()` to gather all reapted question titles and answer body. After that I use `summarize()` to get the average of answer score and question score. Then I created two new variables, one that searchs for the word "python" using `str_detect()` in the question titles. The other varible also searchs for the word python in the answer bodyusing `str_detect()`. Then I made a `ggplot()` for both variables using `geom_point()` with a best line of fit, to see if there were any differences between question titles and answer body regarding the scores. To see if there was a correletion between the average score for answers and question titles I used `cor()` function.
+
+* Findings: I found that there was not much of a difference bewteen the plots. The overall count of question titles compared to answers was higher, but the graphs display a similar relationship between question score and answer score. When calculating the correlation for the graphs, they both displayed a strong positive correlation around 0.5(correlations are underneath each plot). From these graphs, it shows that there is a relation between a question score and answer score. For example, a poorly scored question relates to a low scored answer. This makes sense, because the quality of a question will determine how someone is going to respond to it.
+
+* Explanation: My guess was that answer and question scores would be higher overall becuase they were more specific. Taking everthing into account, if the answer body or question title included "python" in it didn't seem to have an and affect on the score. But I did find a relationship bewteen question and answer scores.
 
 **** 
 #### David's Section
