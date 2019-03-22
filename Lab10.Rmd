@@ -118,7 +118,7 @@ stats
 
 ```
 
-* findings here
+* The tibble above shows the amount of responses that respond within the range of second, minutes, etc. It also shows the percentage and average score of those time ranges. The final column in the tibble is the percent mulitplied by the score so we can get a relative score. It seems that most people respond within minutes(~58.6%). While other time ranges have a higher average score, minutes still have the highest relative score. This means that generally, the questions that are answered within minutes gernerally have better scores relatively.
 
 ```{r,echo = FALSE,message=FALSE}
 # find all of the quickest response times for the same question Id and put a column with rank. 1 = fastest
@@ -163,6 +163,10 @@ jeepers6 <- yeet6[,c(1,19)] %>% rename("diff" = "quickest")
 yaawt6 <- semi_join(yeet6,jeepers6) %>% mutate(rank = 6) %>% arrange(desc(question_id)) 
 
 ```
+****
+* For these graphs and tibbles, we use a combination of `semi_join`,`full_join`, and "anti_join". First, we made a tibble that contain only the quickest answers per question Id and added a variable called rank which represents the order the answers came in. Rank 1 = first answer.
+Then we used `semi-join` to keep all the questions in the orginial data that matched with the new tibble. This gives us a tibble with only rank 1 entries.
+We repeated this process up to rank 6 then use full_join to combine all 6 ranks into one tibble.
 
 ```{r,echo=FALSE,message=FALSE}
 
@@ -170,11 +174,18 @@ ultimate_yeet <- full_join(yaawt,yaawt2) %>% full_join(.,yaawt3)%>% full_join(.,
 ```
 ```{r,echo=FALSE}
 ggplot(data = ultimate_yeet, mapping = aes(x = rank))+
-  geom_density() + ggtitle("Distribution of Rank","Rank 'n' = nth responder")
+  geom_density(fill = "blue") + ggtitle("Distribution of Rank","Rank 'n' = nth responder")
+
+n1 <- ultimate_yeet %>% group_by(rank) %>% count() %>% mutate(percent = n/30185)
+n1
+
 
 ```
-shows the rank of a response in respect to the question being ask
-this makes sense, most questions only have one response, there are more nth responses than (n+1)th responses
+
+
+* The graph and tibble above shows the distribution of ranks. The graph shows a steady decrease in the denstiy of rank and the rank increases. 33% of all answers are rank 1 but only 18% are rank 3. This makes sense that there are more nth responses than (n+1)th responses. This is becuase the previous answers most likely sufficiently answered the question and there is no need to upload a new one.
+
+****
 ```{r,echo=FALSE,message=FALSE}
 ultimate_yeet <- ultimate_yeet %>% arrange(desc(question_id))
 
@@ -187,12 +198,37 @@ hawye <- semi_join(zoinks,shaggy) %>% arrange(desc(question_id))
 force <- semi_join(ultimate_yeet,hawye)
 ```
 
+* The graph and tibbles here were created in a similar manner has previously discussed. However we used `semi_join` to combine the data with all the ranks with a data set that contained only the top answer score for each question. This resulted in a tibble that contained only the top answer score per question and had a rank. We did this because we wanted to see which rank tends to have the highest score.
+
 ```{r,echo=FALSE}
- force %>% group_by(rank) %>% count()
+ 
 ggplot(data = force, mapping = aes(x = rank))+
-  geom_density() + ggtitle("Rank Distribution for Highest Answer Score","Rank 'n' = nth responder")
+  geom_density(fill = "red") + ggtitle("Rank Distribution for Highest Answer Score","Rank 'n' = nth responder")
+n2 <- force %>% group_by(rank) %>% count() %>% mutate(percent = n/10682)
+n2
 ```
-lines up well with the distrubion of rank graph
+
+* The graph and tibble above shows the same trend has the Rank Distribution graph. This means that rank 1 answers tend to have the highest answer scores. Of all the top answers, 50% are rank 1. Only 27% are rank 2. This makes sense. There are many questions that only contain one rank, making Rank 1 the highest scoring by default. Also, there is a high chance that the first few question do a good job of answering the question and recieves a higher score.
+
+****
+* An overlay between the who distributions are shows below. This shows that while they follow the saem trend, the red is significatly higer for rank 1-3. This states that for rank 1-3, timeliness of answer does effect what rank recieve the highest score. 
+
+```{r, echo=FALSE}
+
+ggplot(data = force, mapping = aes(x = rank))+
+  geom_density(fill = "red") + geom_density(data = ultimate_yeet, mapping = aes(x = rank),fill = "blue") + ggtitle("Difference in Distributions","Rank 'n' = nth responder")
+
+#legend(5,1.5, legend=c("Line 1", "Line 2"),
+       #col=c("red", "blue"))
+n3 <- n1 %>% left_join(n2, by = "rank") %>% mutate( proportion = n.y/n.x) 
+n3 <- n3[,c(1,6)]
+n3
+#n3 <- n3 %>% mutate(percent = diff/19503)
+
+
+```
+
+* The tibble above shows proportion = (rank n that had the highest answer score)/(all rank n). 52% of all rank 1 are the best answer. 36% of all rank 2 are the best answer. This shows that rank 1 have the highest proportion of top answers. 
 
 **** 
 #### Arie's Section
@@ -245,15 +281,23 @@ correlation2
 #### David's Section
 ****
 
+* Question: How does the length of a question impact the average answer score for all questions with the same length.
+* Explanation: This is important to investigate becuase there might be a correlation between specificity of a question and how well users can answer a question. 
+
 ```{r, echo=FALSE}
 gut <- merged3 %>% group_by(question_id) %>% mutate(ave = mean(answer_score)) %>% mutate(length = str_length(question_title)) %>% arrange(desc(ave)) 
  
 get <- gut[,c(1,3,11,12)]  %>% unique()  
-got <- get %>% filter(length < 5000, ave > 0, ave < 25) 
  
 ggplot(data = get, mapping = aes(x = length, y = ave))+ 
   geom_point() + ylab("Average Anwser Score ") + xlab("Character Length of Question") + ggtitle("Score Vs. Length")
 ```
+
+* Process: I created a tibble that showed the average answer score for each unique question. I did this by using verbs such as `group_by` and `mutate` to create new variables. Within `mutate` I used `str_lenght` to count the amount of characters within a question title. Finally, I created a scatter plot using `geom_point` of this data to see if there was a coorelation between question length and answer score.
+
+* Findings: My hypothesis was that there would be a optimum question length for highest answer scores. Linearly, there does not seem to be a coorelation bewteen length and score. I think this is becuase there are substantially more data points that are not outliers to the data. However, a majority of outliers (those questions wih really high answer scores) lie between 25-75 characters. This leads me to believe there is a optimum region where you can find the questions with the highest answer scores. 
+
+* Explanantion: This makes sense. I believe this trend as to do with miscommunication. If a question is too short, it is often vague and very broad. When answering a broad question, there are many facets you can address. The answer may not be specifically what the reader was looking for, decreasing the average answer score. If a question is too long, it can be either too specific or too confusing. In this case, the person answering might misinterpret the question leading to an answer that does not help the user.
 
 **** 
 #### Ethan's Section
@@ -366,8 +410,8 @@ ggplot(data = merged7, mapping = aes(x = neat_count, y = ave)) +
 
 #### Who did what?
 
-* David - Big gay
+* David - Ind section, started GitKraken Repo, team aspect tibbles and graphs, finding/explanations for team section addressing the second question. 
 * Arie - 
 * Anderson- 
-* Ethan- ind section and findings, merged and tidied/sorted the two datasets, findings/explanation on team section
+* Ethan- ind section and findings, merged and tidied/sorted the two datasets, findings/explanation on team section addressing first question. 
 * Ryan-
