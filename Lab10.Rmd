@@ -92,12 +92,12 @@ ggplot(data = s, mapping = aes(y = answer_score,x = diff))+
 
 ```{r,echo=FALSE}
 # stats try percentage of question answered within a minute, hour, day, week, year. and the amount of those
-ss <- s %>% summarize(score = mean(answer_score))
-mm <- m %>% summarize(score = mean(answer_score))
-hh <- h %>% summarize(score = mean(answer_score))
-dd <- d %>% summarize(score = mean(answer_score))
-ww <- w %>% summarize(score = mean(answer_score))
-yy <- y %>% summarize(score = mean(answer_score))
+#ss <- s %>% summarize(score = mean(answer_score))
+#mm <- m %>% summarize(score = mean(answer_score))
+#hh <- h %>% summarize(score = mean(answer_score))
+#dd <- d %>% summarize(score = mean(answer_score))
+#ww <- w %>% summarize(score = mean(answer_score))
+#yy <- y %>% summarize(score = mean(answer_score))
 
 
 #sum(45,18801,9103,1511,2546,84)
@@ -111,6 +111,51 @@ average_score = c(106,17.1,8.62,10.2,11.6,50.5),
 stats <- stats
 stats
 
+```
+
+* findings here
+
+```{r,echo = FALSE}
+# find all of the quickest response times for the same question Id and put a column with rank. 1 = fastest
+yeet <- yote %>% group_by(question_id) %>% mutate(quickest = min(diff)) %>% arrange(desc(question_id))
+
+jeepers <- yeet[,c(1,19)] %>% rename("diff" = "quickest")
+
+yaawt <- semi_join(yeet,jeepers) %>% mutate(rank = 1) %>% arrange(desc(question_id)) 
+
+# filters out all the rank one rows so the new "rank 1" is actually rank 2
+yeet2 <- anti_join(yeet,jeepers) %>% group_by(question_id) %>% mutate(quickest = min(diff)) %>% arrange(desc(question_id))
+# Ranks 2s
+jeepers2 <- yeet2[,c(1,19)] %>% rename("diff" = "quickest")
+
+yaawt2 <- semi_join(yeet2,jeepers2) %>% mutate(rank = 2) %>% arrange(desc(question_id)) 
+
+# rank 3 filters out all ranks 2
+yeet3 <- anti_join(yeet2,jeepers2) %>% group_by(question_id) %>% mutate(quickest = min(diff)) %>% arrange(desc(question_id))
+
+jeepers3 <- yeet3[,c(1,19)] %>% rename("diff" = "quickest")
+
+yaawt3 <- semi_join(yeet3,jeepers3) %>% mutate(rank = 3) %>% arrange(desc(question_id)) 
+
+# rank 4 filters out all ranks 3
+yeet4 <- anti_join(yeet3,jeepers3) %>% group_by(question_id) %>% mutate(quickest = min(diff)) %>% arrange(desc(question_id))
+
+jeepers4 <- yeet4[,c(1,19)] %>% rename("diff" = "quickest")
+
+yaawt4 <- semi_join(yeet4,jeepers4) %>% mutate(rank = 4) %>% arrange(desc(question_id)) 
+
+# rank 5 filters out all ranks 4
+yeet5 <- anti_join(yeet4,jeepers4) %>% group_by(question_id) %>% mutate(quickest = min(diff)) %>% arrange(desc(question_id))
+
+jeepers5 <- yeet5[,c(1,19)] %>% rename("diff" = "quickest")
+
+yaawt5 <- semi_join(yeet5,jeepers5) %>% mutate(rank = 5) %>% arrange(desc(question_id)) 
+
+```
+
+```{r,echo=FALSE}
+
+ultimate_yeet <- full_join(yaawt,yaawt2) %>% full_join(.,yaawt3)%>% full_join(.,yaawt4)%>% full_join(.,yaawt5)
 ```
 
 **** 
